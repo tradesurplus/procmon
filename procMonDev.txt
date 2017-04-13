@@ -1,0 +1,23 @@
+procmon.java
+
+- allow for user supplied config file
+    if supplied, use it
+    else use default
+    check that the file exists
+- get server hostname that's running procmon and check that it's has been defined in config file
+    if so, generate header
+    if not, error and quit
+- header
+    get date
+    use hostname to get the server type
+    use server type to get header detail
+    use hostname to get server description
+    print date, header detail, hostname and server description
+- processes
+    based on the server type, find the processes that need to be monitored from the config file
+    get a list of the currently running processes
+    compare what should be running with what is running
+    ensure the processes are displayed by group, as defined in the config file
+    separate the groups with a serparator line and after the last process is displayed
+    
+    

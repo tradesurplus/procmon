@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<!-- Configuration of components. Note that the Param ID cannot contain a '.' as this character cannot be used in variable names. -->
+<procmon>
+    <output>
+        <headers>
+            <header>
+                <name>pc</name>
+                <header_detail>P C   S T A T U S</header_detail>
+            </header>
+            <header>
+                <name>middleware</name>
+                <header_detail>M I D D L E W A R E   S T A T U S</header_detail>
+            </header>
+            <header>
+                <name>legacy</name>
+                <header_detail>L E G A C Y    S T A T U S</header_detail>
+            </header>
+            <separator_char>-</separator_char>
+            <!-- <special_chars>:|()'-</special_chars> -->
+        </headers>
+    </output>
+    <processes>
+        <!-- Either the pid_filename or search_string element needs to be populated.
+        Remove whichever element isn't being used.
+	If the pid_filename element is used then it must include the full path as well as the filename. -->
+        <process type="pc" group="1">
+            <description>Kate text editor</description>
+            <name>kate</name>
+            <owner>john</owner>
+            <!-- <pid_filename></pid_filename> -->
+            <search_string>/usr/bin/kate</search_string>
+        </process>
+        <process type="pc" group="1">
+            <description>Firefox browser</description>
+            <name>firefox</name>
+            <owner>john</owner>
+            <!-- <pid_filename></pid_filename> -->
+            <search_string>/usr/lib64/firefox/firefox</search_string>
+        </process>
+        <process type="pc" group="2">
+            <description>dhcp client</description>
+            <name>dhclient</name>
+            <owner>root</owner>
+            <pid_filename>/var/run/dhclient-enp0s25.pid</pid_filename>
+            <!-- <search_string></search_string> -->
+        </process>
+        <process type="pc" group="2">
+            <description>irqbalance</description>
+            <name>irqbalance</name>
+            <owner>root</owner>
+            <!--<pid_filename>/var/run/irqbalance.pid</pid_filename> -->
+            <search_string>/usr/sbin/irqbalance</search_string>
+        </process>
+        <process type="legacy" group="1">
+            <description>Spot FIRM</description>
+            <name>spotFirm</name>
+            <owner>efxfirm</owner>
+            <directory>/opt/efx/firm</directory>
+            <!-- <pid_filename></pid_filename> -->
+            <search_string>firm/firm</search_string>
+        </process>
+        <process type="middleware" group="1">
+            <description>Fwd FIRM</description>
+            <name>fwdFirm</name>
+            <owner>efxfirm</owner>
+            <directory>/opt/efx/ffirm</directory>
+            <pid_filename>ffirm.pid</pid_filename>
+            <!-- <search_string>firm/firm</search_string> -->
+        </process>
+    </processes>
+    <servers>
+        <server type="pc">
+            <description>Dell laptop</description>
+            <hostname>Dell-D630</hostname>
+        </server>
+        <server type="pc">
+            <description>Dell Optiplex 755</description>
+            <hostname>Dell-Opti755</hostname>
+        </server>
+        <server type="pc">
+            <description>Dell desktop</description>
+            <hostname>vostro.local</hostname>
+        </server>
+        <server type="legacy">
+            <description>Prod Legacy App Server</description>
+            <hostname>tmels130</hostname>
+        </server>
+    </servers>
+    <variables>
+        <colours>
+            <header colour="bright_cyan">[1;36m</header>
+            <not_running colour="bold red">[1;31m</not_running>
+            <running colour="bold green">[1;32m</running>
+            <separator colour="white">[0;37m</separator>
+            <standard colour="white">[0;37m</standard>
+            <warning colour="bold yellow">[1;33m</warning>
+            <seqterm>[m</seqterm> <!-- sequence terminator -->
+            <escseq>\u001b</escseq> <!-- escape sequence -->
+        </colours>
+        <ps_command>ps -eo pid,ruser,stime,args</ps_command>
+    </variables>
+</procmon>

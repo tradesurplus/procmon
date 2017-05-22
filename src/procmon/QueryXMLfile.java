@@ -124,8 +124,4 @@ public class QueryXMLfile {
         Boolean check = (Boolean) expr.evaluate(doc, XPathConstants.BOOLEAN);
         return check;
     }
-//  public static void main(String[] args) throws XPathExpressionException, ParserConfigurationException, SAXException, IOException {
-//    QueryXMLfile process = new QueryXMLfile();
-//    process.query();
-//  }
 }

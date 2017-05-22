@@ -2,6 +2,7 @@ package procmon;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 //import javax.xml.xpath.XPathConstants;
@@ -15,6 +16,9 @@ import org.xml.sax.SAXException;
 public class ProcMon {
     
     public static void main(String[] args) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
+        int objects;
+        int objectCount = 0;
+        
         // check for user-defined XML config file
         String configFile;
         if (args.length > 0) {
@@ -48,24 +52,6 @@ public class ProcMon {
         String serverDescription = qxf.query(configFile, searchForServerDescription);
         s.setDescription(serverDescription);
         
-        // look up the separator char
-        String searchForSeparatorChar = "//separator_char/text()";
-        String separatorChar = qxf.query(configFile, searchForSeparatorChar);
-        
-        // output header
-        ReportHeader rh = new ReportHeader();
-        rh.setHeaderDetail(headerDetail);
-        rh.setHostname(hostname);
-        rh.setSeparatorChar(separatorChar);
-
-        String headerText = String.format("%s        %s        %s (%s)",rh.getHeaderDate(), rh.getHeaderDetail(), rh.getHostname(), s.getDescription());
-        StringLength sl = new StringLength(0);
-        if (headerText.length() > sl.getHighestCharCount()) {
-            sl.setHighestCharCount(headerText);
-        }
-        System.out.println(headerText);
-        System.out.println(rh.getReportLineSeparator(sl.getHighestCharCount()));
-        
         // based on the server type, find the processes that need to be monitored
         //String searchForProcesses = "//process[@type='" + serverType + "']/search_string/text()|//process[@type='" + serverType + "']/pid_filename/text()";
         List<String> processesByString = new ArrayList<String>();
@@ -78,47 +64,95 @@ public class ProcMon {
         for (String process: qxf.queryProcesses(configFile, searchForProcessesByPID)) {
             processesByPID.add(process);
         }
+        
+        // work out how many Process objects to create
+        objects = processesByString.size() + processesByPID.size();
+        
+        Process[] processToMonitor = new Process[objects];
 
-        //debug
         for (String process: processesByString) {
-            System.out.println("Monitor -> " +process);
+            //find process description
+            String searchForProcessDescription = "//process[search_string='" + process + "']/description/text()";
+            String processDescription = qxf.query(configFile, searchForProcessDescription);
+
+            //find process owner
+            String searchForProcessOwner = "//process[search_string='" + process + "']/owner/text()";
+            String processOwner = qxf.query(configFile, searchForProcessOwner);
+
+            //find process group
+            String searchForProcessGroup = "//process[search_string='" + process + "']/@group";
+            String processGroup = qxf.query(configFile, searchForProcessGroup);
+            
+            //create Process object
+            processToMonitor[objectCount] = new ProcessByString(process, processDescription, processOwner, processGroup, null, false, false);
+//            processes[objectCount] = new ProcessByString(process, processDescription, processOwner, processGroup, false);
+            
+            // increment var for next object
+            objectCount++;
         }
+
         for (String process: processesByPID) {
-            System.out.println("Monitor -> " +process);
+            //set description
+            String searchForProcessDescription = "//process[pid_filename='" + process + "']/description/text()";
+            String processDescription = qxf.query(configFile, searchForProcessDescription);
+            
+            //find process owner
+            String searchForProcessOwner = "//process[pid_filename='" + process + "']/owner/text()";
+            String processOwner = qxf.query(configFile, searchForProcessOwner);
+            
+            //find process group
+            String searchForProcessGroup = "//process[pid_filename='" + process + "']/@group";
+            String processGroup = qxf.query(configFile, searchForProcessGroup);
+            
+            //create Process object
+            processToMonitor[objectCount] = new ProcessByPID(process, processDescription, processOwner, processGroup, null, false, true);
+            
+            // increment var for next object
+            objectCount++;
         }
-        //debug
-        
-        
+
         // take the processes that need to be monitored and look for them in a list of 
         // running processes
 
         // get the command to list running processes from the config file
         String searchForPSCommand = "//ps_command/text()";
         String psCommand = qxf.query(configFile, searchForPSCommand);
-        ProcessList pl = new ProcessList();
-        pl.setPSCommand(psCommand);
+        ProcessList pl = new ProcessList(psCommand);
         
         // get a list of currently running processes
-        List<String> AllRunningProcs = pl.getRunningProcs();
+        List<String> AllRunningProcs = pl.runningProcs();
         
         // check whether the processes that need to be monitored are running
-        ProcessIsRunningSearch prv = new ProcessIsRunningSearch(processesByString, processesByPID, AllRunningProcs);
-        List<String> foundRunningProcs = prv.searchForProcess();
+        ProcessSearch ps = new ProcessSearch(processToMonitor, AllRunningProcs);
+        Process[] foundRunningProcs = ps.searchForProcess();
         
-        //debug
-        for (String process: foundRunningProcs) {
-            System.out.println("Running -> " +process);
+        List<Process> sortedByGroup = new ArrayList<Process>();
+        for (Process process: foundRunningProcs) {
+            sortedByGroup.add(process);
         }
-        //debug
-
         
-        ProcessDetails pd = new ProcessDetails(foundRunningProcs);
-        //debug
-        for (String process: pd.getProcessDetails()) {
-            // use split() to put each element of the string into an array
-            // so that each element can be handled separately
-            System.out.println("ProcessDetails -> " + process);
+        // sort processes by group so they can be displayed together
+        Collections.sort(sortedByGroup);
+        
+        //get the process details we want to display
+        ReportLine[] reportlines = new ReportLine[sortedByGroup.size()];
+        final int PID = 0;
+        final int OWNER = 1;
+        final int RUNNINGTIME = 2;
+        
+        for (Process process : sortedByGroup) {
+            if (process.getIsRunning()) {
+                ProcessDetails pd = new ProcessDetails(process.getProcessDetails());
+                String[] processDetails = pd.processDetails().split("\\s+");
+                reportlines[sortedByGroup.indexOf(process)] = new ReportLine(process.getGroup(), process.getDescription(), process.getIsRunning(), processDetails[OWNER], process.getOwner(), processDetails[PID], processDetails[RUNNINGTIME]);
+            } else {
+                reportlines[sortedByGroup.indexOf(process)] = new ReportLine(process.getGroup(), process.getDescription(), process.getIsRunning(), process.getOwner(), null, null, null);
+            }
         }
-        //debug
+        
+        // create a report object to store output of process details
+        ReportHeader rh = new ReportHeader(headerDetail, hostname, s.getDescription());
+        Report report = new Report(rh.headerText(), configFile, reportlines);
+        report.printReport();
     }
 }

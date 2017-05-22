@@ -13,17 +13,12 @@ import java.util.List;
 public class ProcessList {
     private String pscommand;
     private List<String> runningProcs;
-    
-    public ProcessList() {
-    }
+
     public ProcessList(String pscommand) {
-    }
-    
-    public void setPSCommand(String pscommand) {
         this.pscommand = pscommand;
     }
-    
-    public List<String> getRunningProcs() {
+   
+    public List<String> runningProcs() {
         try {
             String process;
             String[] cmd = { "/bin/sh", "-c", pscommand };

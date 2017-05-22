@@ -19,5 +19,4 @@ public class StringLength {
         highestCharCount = text.length();
         return highestCharCount;
     }
-    //tochararray() may be useful in determining the length of an output string
 }

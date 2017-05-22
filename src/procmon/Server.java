@@ -10,12 +10,10 @@ import java.io.InputStreamReader;
  */
 public class Server {
     private String description;
-    private String hostname;
     private String type;
         
     public Server(String description, String hostname, String type) {
         this.description = description;
-        this.hostname = hostname;
         this.type = type;
     }
     
@@ -48,16 +46,4 @@ public class Server {
     public String getType() {
         return type;
     }
-    
-//    @Override
-//    public String toString() {
-//        StringBuilder sb = new StringBuilder();
-//        sb.append("Server details - ");
-//        sb.append("Description: ").append(getDescription());
-//        sb.append("\t\t");
-//        sb.append("Type: ").append(getType());
-//        sb.append("\t");
-//        sb.append("Hostname: ").append(getHostname());
-//        return sb.toString();
-//    }
 }

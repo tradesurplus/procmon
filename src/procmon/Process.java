@@ -4,78 +4,68 @@ package procmon;
  *
  * @author John Carruthers
  */
-public class Process {
-    
+public class Process implements Comparable<Process> {
     private String description;
-    private String name;
     private String owner;
-    private String pidFilename;
-    private String searchString;
-    private String type;
     private String group;
+    private String processDetails;
+    private boolean isRunning;
+    private boolean isPID;
         
     public Process(
                 String description,
-                String name,
                 String owner,
-                String pidFilename,
-                String searchString,
-                String type,
-                String group) {
+                String group,
+                String processDetails,
+                boolean isRunning,
+                boolean isPID) {
         this.description = description;
-        this.name = name;
         this.owner = owner;
-        this.pidFilename = pidFilename;
-        this.searchString = searchString;
-        this.type = type;
         this.group = group;
+        this.processDetails = processDetails;
+        this.isRunning = isRunning;
+        this.isPID = isPID;
     }
-        
+    
     public String getDescription() {
         return this.description;
-    }
-
-    public String getName() {
-        return this.name;
     }
 
     public String getOwner() {
         return this.owner;
     }
 
-    public String getPidFilename() {
-        return this.pidFilename;
-    }
-
-    public String getSearchString() {
-        return this.searchString;
-    }
-
-    public String getType() {
-        return this.type;
-    }
-
     public String getGroup() {
         return this.group;
     }
+
+    public String getProcessDetails() {
+        return this.processDetails;
+    }
     
-//    @Override
-//    public String toString() {
-//        StringBuilder sb = new StringBuilder();
-//        sb.append("Process details ");
-//        sb.append("\n\t");
-//        sb.append("Description: ").append(getDescription());
-//        sb.append("\n\t");
-//        sb.append("Type: ").append(getType());
-//        sb.append("\n\t");
-//        sb.append("Name: ").append(getName());
-//        sb.append("\n\t");
-//        sb.append("Group: ").append(getGroup());
-//        sb.append("\n\t");
-//        sb.append("pid Filename: ").append(getPidFilename());
-//        sb.append("\n\t");
-//        sb.append("Search String: ").append(getSearchString());
-//        return sb.toString();
-//    }
+    public boolean getIsRunning() {
+        return this.isRunning;
+    }
+
+    public boolean getIsPID() {
+        return this.isPID;
+    }
+      
+    public void setGroup(String group) {
+        this.group = group;
+    }
+     
+    public void setProcessDetails(String processDetails) {
+        this.processDetails = processDetails;
+    }
     
+    public void setIsRunning(boolean isRunning) {
+        this.isRunning = isRunning;
+    }
+    
+    @Override
+    public int compareTo(Process p) {
+//        return p.getGroup().compareTo(this.getGroup());  //decending
+        return this.getGroup().compareTo(p.getGroup());  //ascending
+    }
 }

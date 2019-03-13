@@ -28,13 +28,5 @@ public class ProcMon {
         // generate ProcMon output
         Report r = new Report(xf, s);
         r.printReport();
-
-        //method tests
-//        s.setHostname("Dell-Opti755");
-//        System.out.println("Server name is: " + s.getHostname());
-//        System.out.println("Server description is: " + s.searchForServerDescription(xf));
-//        System.out.println("Server type is: " + s.searchForServerType(xf));
-//        System.out.println("separatorHeader: " + xf.lookupConfigFile("separatorHeader", null));
-        
     }
 }

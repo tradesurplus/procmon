@@ -24,12 +24,10 @@ public class XMLConfigFile {
         // if the user doesn't provide a config file then the default
         // is assumed to be "procMonConfig.xml"
         this.filename = "procMonConfig.xml";
-//        testXMLConfigQuery(filename);
     }
     
     public XMLConfigFile(String filename) throws ConfigurationException {
         this.filename = filename;
-//        testXMLConfigQuery(filename);
     }
     
     public String lookupConfigFile(String element, String elementVar) throws ConfigurationException {
@@ -60,9 +58,6 @@ public class XMLConfigFile {
             case "header":
                 elementLookup = "//header[name='" + elementVar + "']/header_detail";
                 break;
-//            case "processesByString":
-//                elementLookup = "//process[@type='" + elementVar + "']/search_string";
-//                break;
             case "processDescription":
                 elementLookup = "//process[search_string='" + elementVar + "']/description";
                 break;
@@ -120,24 +115,6 @@ public class XMLConfigFile {
         }
         return processes;
     }
-
-//    public String getServerDescription(String serverName) throws ConfigurationException {
-//        Configurations configs = new Configurations();
-//        File xmlFile = new File(filename);
-//        XMLConfiguration config = configs.xml(xmlFile);
-//        config.setExpressionEngine(new XPathExpressionEngine());
-//        String foundDescription = config.getString("//server[hostname='" + serverName + "']/description");
-//        return foundDescription;
-//    }
-//
-//    public String getServerType(String serverName) throws ConfigurationException {
-//        Configurations configs = new Configurations();
-//        File xmlFile = new File(filename);
-//        XMLConfiguration config = configs.xml(xmlFile);
-//        config.setExpressionEngine(new XPathExpressionEngine());
-//        String foundType = config.getString("//server[hostname='" + serverName + "']/@type");
-//        return foundType;
-//    }
     
     public Boolean queryServerConfig(String servername) throws ConfigurationException {
         Configurations configs = new Configurations();
@@ -156,63 +133,4 @@ public class XMLConfigFile {
         }
         return foundServer;
     }
-    
-//    public String query() {
-//        // This needs to be coded.  See ConfigFile.java for functionality.
-//        String queryResult = null;
-//        return queryResult;
-//    }
-//    
-//    public List<String> queryProcesses() {
-//        // This needs to be coded.  See ConfigFile.java for functionality.
-//        List<String> queryResult = new ArrayList<>();
-//        return queryResult;
-//    }
-//    
-//    public Boolean queryServerConfig(String serverSearch) throws ConfigurationException {
-//        // This needs to be coded.  See ConfigFile.java for functionality.
-//        Configurations configs = new Configurations();
-//        XMLConfiguration config = configs.xml(filename);
-//        config.setExpressionEngine(new XPathExpressionEngine());
-//        config.getString(serverSearch);
-//        
-//        Boolean check = false;
-//        return check;
-//    }
-    
-//    private void testXMLConfigQuery(String conf) throws ConfigurationException {
-//        Configurations configs = new Configurations();
-//        File xmlFile = new File(conf);
-//        XMLConfiguration config = configs.xml(xmlFile);
-//        String name = "z210";
-//        config.setExpressionEngine(new XPathExpressionEngine());
-//// ######## search for server name in conf file
-////        boolean foundServer = config.getBoolean("count(//server[hostname='" + name + "'])>0", false);
-//        String foundServer;
-//        JXPathContext context = JXPathContext.newContext(config);
-//        CompiledExpression expr = context.compile("count(//server[hostname='" + name + "'])>0");
-//        foundServer = expr.getValue(context).toString();
-//        System.out.println(foundServer);
-////        List serverList = config.getList("servers.server.hostname");
-////        for (Object server : serverList) {
-////            if (server.toString().equals(name)) {
-////                System.out.println("Config exists for server: " + server.toString());
-////                foundServer = true;
-////            }
-////        }
-////        if (!foundServer) {
-////            System.out.println("This host (" + name + ") has not been defined in the config file.\nUpdate the file with the processes that need to be monitored on this server and try again.");
-////            System.exit(0);
-////        }
-//// ########
-//// ######## search for server type
-//        config.setExpressionEngine(new XPathExpressionEngine());
-//        String foundType = config.getString("//server[hostname='" + name + "']/@type");
-//        System.out.println("Server type is: " + foundType);
-//        
-//        // ######## search for server Description
-//        config.setExpressionEngine(new XPathExpressionEngine());
-//        String foundDescription = config.getString("//server[hostname='" + name + "']/description");
-//        System.out.println("Server description is: " + foundDescription);
-//    }
 }

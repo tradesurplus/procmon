@@ -11,13 +11,7 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
  */
 public class Server {
     private String description;
-//    private String type;
     private String hostname;
-        
-    public Server(String description, String type) {
-        this.description = description;
-//        this.type = type;
-    }
     
     public Server() {
     }
@@ -52,14 +46,6 @@ public class Server {
     public void setHostname(String hostname) {
         this.hostname = hostname;
     }
-
-//    public String getType() {
-//        return type;
-//    }
-//    
-//    public void setType(String type) {
-//        this.type = type;
-//    }
     
     public void searchForServerConfig(XMLConfigFile xf) throws ConfigurationException {
         String name = queryHostnameFromOS();
